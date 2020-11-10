@@ -1,75 +1,71 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using vino_api.Models;
 
 namespace vino_api.Controllers
 {
-    [Route("api/TodoItems")]
+    [Route("api/Batches")]
     [ApiController]
-    public class TodoItemsController : ControllerBase
+    public class BatchesController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly BatchContext _context;
 
-        public TodoItemsController(TodoContext context)
+        public BatchesController(BatchContext context)
         {
             _context = context;
         }
 
-        // GET: api/TodoItems
+        // GET: api/Batches
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<BatchDTO>>> GetBatches()
         {
-            return await _context.TodoItems
-                .Select(x => ItemToDTO(x))
+            return await _context.Batches
+                .Select(batch => BatchToDTO(batch))
                 .ToListAsync();
         }
 
-        // GET: api/TodoItems/5
+        // GET: api/Batches/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
+        public async Task<ActionResult<BatchDTO>> GetBatch(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var batch = await _context.Batches.FindAsync(id);
 
-            if (todoItem == null)
+            if (batch == null)
             {
                 return NotFound();
             }
 
-            return ItemToDTO(todoItem);
+            return BatchToDTO(batch);
         }
 
-        // PUT: api/TodoItems/5
+        // PUT: api/Batches/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(long id, TodoItemDTO todoItemDTO)
+        public async Task<IActionResult> PutBatch(long id, BatchDTO batchDTO)
         {
-            if (id != todoItemDTO.Id)
+            if (id != batchDTO.Id)
             {
                 return BadRequest();
             }
 
-            var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem == null)
+            var batch = await _context.Batches.FindAsync(id);
+            if (batch == null)
             {
                 return NotFound();
             }
 
-            todoItem.Name = todoItemDTO.Name;
-            todoItem.IsComplete = todoItemDTO.IsComplete;
-
-            //_context.Entry(todoItemDTO).State = EntityState.Modified;
+            batch.Name = batchDTO.Name;
+            batch.IsComplete = batchDTO.IsComplete;
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException) when (!TodoItemExists(id))
+            catch (DbUpdateConcurrencyException) when (!BatchExists(id))
             {
                 return NotFound();
             }
@@ -77,57 +73,55 @@ namespace vino_api.Controllers
             return NoContent();
         }
 
-        // POST: api/TodoItems
+        // POST: api/Batches
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItemDTO todoItemDTO)
+        public async Task<ActionResult<Batch>> PostBatch(BatchDTO batchDTO)
         {
-            var todoItem = new TodoItem
+            var batch = new Batch
             {
-                IsComplete = todoItemDTO.IsComplete,
-                Name = todoItemDTO.Name
+                IsComplete = batchDTO.IsComplete,
+                Name = batchDTO.Name
             };
 
-            _context.TodoItems.Add(todoItem);
+            _context.Batches.Add(batch);
             await _context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
             return CreatedAtAction(
-                nameof(GetTodoItem),
-                new { id = todoItem.Id },
-                ItemToDTO(todoItem)
+                nameof(GetBatch),
+                new { id = batch.Id },
+                BatchToDTO(batch)
             );
         }
 
-        // DELETE: api/TodoItems/5
+        // DELETE: api/Batches/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<TodoItem>> DeleteTodoItem(long id)
+        public async Task<ActionResult<Batch>> DeleteBatch(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
-            if (todoItem == null)
+            var batch = await _context.Batches.FindAsync(id);
+            if (batch == null)
             {
                 return NotFound();
             }
 
-            _context.TodoItems.Remove(todoItem);
+            _context.Batches.Remove(batch);
             await _context.SaveChangesAsync();
 
-            //return todoItem;
             return NoContent();
         }
 
-        private bool TodoItemExists(long id)
+        private bool BatchExists(long id)
         {
-            return _context.TodoItems.Any(e => e.Id == id);
+            return _context.Batches.Any(batch => batch.Id == id);
         }
 
-        private static TodoItemDTO ItemToDTO(TodoItem todoItem) =>
-        new TodoItemDTO
+        private static BatchDTO BatchToDTO(Batch batch) =>
+        new BatchDTO
         {
-            Id = todoItem.Id,
-            Name = todoItem.Name,
-            IsComplete = todoItem.IsComplete
+            Id = batch.Id,
+            Name = batch.Name,
+            IsComplete = batch.IsComplete
         };
     }
 }
