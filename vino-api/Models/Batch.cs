@@ -1,6 +1,6 @@
 ﻿namespace vino_api.Models
 {
-    public class TodoItem
+    public class Batch
     {
         public long Id { get; set; }
         public string Name { get; set; }
