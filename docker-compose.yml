@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  vino-api:
+    image: 814k31/vino-api
+    build:
+      context: ./vino-api
+      dockerfile: Dockerfile
