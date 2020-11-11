@@ -5,5 +5,5 @@
 - http://20.53.92.123/ (Container Instance)
 
 # Available Endpoints
-- /api/batches [GET, POST]
-- /api/batches/:id [GET, PATCH, POST, DELETE]
+- `/api/batches` [GET, POST]
+- `/api/batches/:id` [GET, PATCH, POST, DELETE]
