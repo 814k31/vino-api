@@ -1,6 +1,5 @@
-FROM mcr.microsoft.com/dotnet/aspnet:3.1
+FROM mcr.microsoft.com/dotnet/aspnet
 ARG source
-RUN echo "${source}"
 WORKDIR /app
 EXPOSE 80
 COPY ${source:-obj/Docker/publish} .
