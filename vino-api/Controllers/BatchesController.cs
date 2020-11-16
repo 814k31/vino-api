@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,8 +59,8 @@ namespace vino_api.Controllers
                 return NotFound();
             }
 
+            batch.DateUpdated = DateTime.Now;
             batch.Name = batchDTO.Name;
-            batch.IsComplete = batchDTO.IsComplete;
 
             try
             {
@@ -81,7 +82,8 @@ namespace vino_api.Controllers
         {
             var batch = new Batch
             {
-                IsComplete = batchDTO.IsComplete,
+                DateCreated = DateTime.Now,
+                DateUpdated = null,
                 Name = batchDTO.Name
             };
 
@@ -120,8 +122,9 @@ namespace vino_api.Controllers
         new BatchDTO
         {
             Id = batch.Id,
+            DateCreated = batch.DateCreated,
+            DateUpdated = batch.DateUpdated,
             Name = batch.Name,
-            IsComplete = batch.IsComplete
         };
     }
 }

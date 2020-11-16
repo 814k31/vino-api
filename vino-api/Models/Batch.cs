@@ -1,10 +1,13 @@
-﻿namespace vino_api.Models
+﻿using System;
+
+namespace vino_api.Models
 {
     public class Batch
     {
         public long Id { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateUpdated { get; set; }
         public string Name { get; set; }
-        public bool IsComplete { get; set; }
         public string Secret { get; set; }
     }
 }
