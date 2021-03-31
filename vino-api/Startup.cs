@@ -21,7 +21,7 @@ namespace vino_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<BatchContext>(options => options.UseSqlServer(
-                Configuration.GetConnectionString("VinoDBConnection")
+                Configuration.GetConnectionString("LocalDBConnection")
             ));
             services.AddControllers();
         }
