@@ -1,8 +1,18 @@
 version: '3'
 
 services:
-  vino-api:
-    image: 814k31/vino-api
-    build:
-      context: ./vino-api
-      dockerfile: Dockerfile
+  # vino-api:
+  #   image: 814k31/vino-api
+  #   build:
+  #     context: ./vino-api
+  #     dockerfile: Dockerfile
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    container_name: sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Password123
+    ports:
+      - "1433:1433"
+    volumes:
+      - ~/DockerVolumes/sqlserver:/var/opt/mssql/data

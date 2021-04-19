@@ -4,26 +4,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using vino_api.Models;
+using vino_api.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace vino_api.Controllers
 {
-    [Route("api/Batches")]
     [ApiController]
-    public class BatchesController : ControllerBase
+    [Route("api/Batches")]
+    public class BatchesController : Controller
     {
-        private readonly BatchContext _context;
-
-        public BatchesController(BatchContext context)
+        private readonly VinoDbContext _context;
+        public BatchesController(VinoDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Batches
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BatchDTO>>> GetBatches()
         {
-            return await _context.Batches
+            return await _context.Set<Batch>()
                 .Select(batch => BatchToDTO(batch))
                 .ToListAsync();
         }
@@ -32,7 +33,8 @@ namespace vino_api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BatchDTO>> GetBatch(long id)
         {
-            var batch = await _context.Batches.FindAsync(id);
+            
+            var batch = await _context.Set<Batch>().FindAsync(id);
 
             if (batch == null)
             {
@@ -53,7 +55,7 @@ namespace vino_api.Controllers
                 return BadRequest();
             }
 
-            var batch = await _context.Batches.FindAsync(id);
+            var batch = await _context.Set<Batch>().FindAsync(id);
             if (batch == null)
             {
                 return NotFound();
@@ -87,7 +89,7 @@ namespace vino_api.Controllers
                 Name = batchDTO.Name
             };
 
-            _context.Batches.Add(batch);
+            await _context.Set<Batch>().AddAsync(batch);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(
@@ -101,13 +103,13 @@ namespace vino_api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Batch>> DeleteBatch(long id)
         {
-            var batch = await _context.Batches.FindAsync(id);
+            var batch = await _context.Set<Batch>().FindAsync(id);
             if (batch == null)
             {
                 return NotFound();
             }
 
-            _context.Batches.Remove(batch);
+            _context.Set<Batch>().Remove(batch);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -115,7 +117,7 @@ namespace vino_api.Controllers
 
         private bool BatchExists(long id)
         {
-            return _context.Batches.Any(batch => batch.Id == id);
+            return _context.Set<Batch>().Any(batch => batch.Id == id);
         }
 
         private static BatchDTO BatchToDTO(Batch batch) =>
